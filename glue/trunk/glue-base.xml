@@ -1,0 +1,287 @@
+<project name="glue-base" xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+    <!--
+        This is a preliminary version of the build
+        We need to integrate web builds and split this huge file 
+        depending on the kind of target we want to generate
+     -->
+    
+    
+    <!--  Common directories for projects -->
+    
+    <property name="src.dir" location="${basedir}/src" />
+    <property name="src.main.dir" location="${src.dir}/main" />
+    <property name="src.test.dir" location="${src.dir}/test" />
+    <property name="src.resources.dir" location="${basedir}/resources" />
+    <property name="src.images.dir" location="${basedir}/images" />
+    <property name="dist.dir" location="${basedir}/dist" />
+    <property name="dist.artifacts.dir" location="${dist.dir}/artifacts" />
+    <property name="dist.doc.dir" location="${dist.dir}/doc" />
+    <property name="dist.lib.dir" value="${dist.dir}/libs" />
+    <property name="build.dir" value="${basedir}/build" />
+    <property name="build.classes.dir" value="${build.dir}/classes" />
+    <property name="build.lib.dir" value="${build.dir}/libs" />
+    <property name="build.artifacts.dir" location="${build.dir}/artifacts" />
+
+    <dirname file="${ant.file.glue-base}" property="glue.dir" />
+    <property file="${glue.dir}/ivy.properties" />
+
+    <import file="${glue.dir}/glue-macros.xml" />
+
+    <path id="classpath.lib">
+        <fileset dir="${ivy.lib.dir}" includes="*.jar" />
+    </path>
+
+    <path id="classpath.artifacts">
+        <fileset dir="${build.artifacts.dir}" includes="*.jar" />
+    </path>
+
+    <target name="load-ivy" unless="ivy-loaded">
+        <tstamp>
+            <format property="now" pattern="yyyyMMddHHmmss" />
+        </tstamp>
+
+        <path id="glue.lib.path">
+            <fileset dir="${glue.dir}/libs" includes="*.jar" />
+        </path>
+
+        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="glue.lib.path" />
+        <property file="${user.home}/glue/repository.properties"  prefix="repository.credential" />
+        <echoproperties prefix="repository.credential"/>
+        <ivy:settings file="${ivy.settings.file}" host="coder.topcoder.com" username="${repository.credential.user}" passwd="${repository.credential.password}"/>
+        <property name="ivy-loaded" value="true" />
+    </target>
+
+    <target name="init" depends="load-ivy">
+        <available property="images-exist" file="${src.images.dir}/." />
+        <available property="resources-exist" file="${src.resources.dir}/." />
+    </target>
+
+    <!-- ================================= 
+        target: resolve              
+        ================================= -->
+    <target name="resolve" description="--> retrieve dependencies with ivy" depends="init">
+        <ivy:retrieve sync="true" />
+        <mkdir dir="${ivy.lib.dir}" />
+        <ivy:artifactproperty name="filename.[artifact]" value="[artifact]-[revision].[ext]" />
+    </target>
+
+    <!-- ================================= 
+        target: report              
+        ================================= -->
+    <target name="report" depends="resolve" description="--> generates a report of dependencies">
+        <ivy:report todir="${build.dir}" />
+    </target>
+
+    <!-- ================================= 
+        target: recurse
+        ================================= -->
+
+    <macrodef name="recurse">
+        <attribute name="target" default="" />
+        <attribute name="inheritall" default="false" />
+        <attribute name="inheritrefs" default="false" />
+        <element name="inner-subant" optional="true" implicit="true" />
+        <sequential>
+            <ivy:buildlist reference="build-path" ivyfilepath="ivy.xml" skipbuildwithoutivy="true" root="${ant.project.name}">
+                <fileset dir="${root.dir}" includes="**/build.xml" excludes="web/**,gd/**" />
+                <fileset dir="${root.dir}" includes="**/build-ivy.xml" excludes="web/**,gd/**" />
+            </ivy:buildlist>
+            <subant target="@{target}" buildpathref="build-path" inheritall="@{inheritall}" inheritrefs="@{inheritrefs}">
+                <inner-subant />
+            </subant>
+        </sequential>
+    </macrodef>
+
+    <target name="recurse" depends="init">
+        <property name="target" value="" />
+        <recurse target="${target}" />
+    </target>
+
+    <!-- ================================= 
+        target: compile
+        ================================= -->
+    <target name="compile.properties">
+        <property name="compile.optimize" value="on" />
+        <property name="compile.source" value="1.5" />
+        <property name="compile.debug" value="on" />
+    </target>
+
+    <target name="images" depends="init" description="--> compiles source main" if="images-exist">
+        <echo level="debug">Copying images</echo>
+        <copy todir="${build.classes.dir}" filtering="false">
+            <fileset dir="${src.images.dir}" />
+        </copy>
+    </target>
+
+    <target name="resources" depends="init" description="--> compiles source main" if="resources-exist" unless="skip.resources">
+        <echo level="debug">Copying resources</echo>
+        <copy todir="${build.classes.dir}" filtering="true">
+            <fileset dir="${src.resources.dir}" />
+        </copy>
+    </target>
+
+    <target name="prepare-compile" depends="compile.properties, resolve" />
+
+    <target name="compile" depends="prepare-compile" description="--> compiles source main" unless="glue_base.compile_set">
+        <echo level="info">COMPILING ${ant.project.name} --------------------------------------------------</echo>
+        <compile>
+            <includes>
+                <include name="**/*.java" />
+            </includes>
+        </compile>
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${src.main.dir}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+        <antcall target="resources" />
+        <antcall target="images" />
+        <property name="glue_base.compile_set" value="true" />
+    </target>
+
+    <!-- - - - - - - - - - -  - - - - - - - - - 
+        target: version
+        - - - - - - - - - -  - - - - - - - - -  -->
+    <target name="version" depends="init" unless="ivy.new.revision">
+        <condition property="overwrite.shared">
+            <equals arg1="${app.version}" arg2="SNAPSHOT" />
+        </condition>
+        <property name="app.version" value="SNAPSHOT" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - -
+        target: jar
+        - - - - - - - - - - - - - - - - - -->
+    <target name="jar" depends="compile, jar-only" description="--> compiles and then generates jar" />
+
+    <target name="jar-only" depends="version" description="--> generates jar" unless="jar_set">
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${build.artifacts.dir}" />
+        <property name="jar.name" value="${build.artifacts.dir}/${ant.project.name}-${app.version}.jar" />
+        <jar destfile="${jar.name}" update="false">
+            <manifest>
+                <attribute name="Built-By" value="${user.name}" />
+                <attribute name="Build-Version" value="${app.version}" />
+            </manifest>
+            <fileset dir="${build.classes.dir}" />
+        </jar>
+        <property name="jar_set" value="true" />
+    </target>
+
+    <!-- ================================= 
+        target: publish              
+        ================================= -->
+    <target name="publish" depends="jar" description="--> publish this project in the ivy repository">
+        <ivy:publish artifactspattern="${jar.name}" resolver="internal-artifacts" pubrevision="${app.version}" status="release" />
+        <echo message="project ${ant.project.name} released with version ${app.version}" />
+    </target>
+
+    <!-- ================================= 
+        target: publish-local              
+        ================================= -->
+    <target name="publish-local" depends="publish-workspace" description="--> publish this project in the local ivy repository">
+        <ivy:publish artifactspattern="${build.artifacts.dir}/[artifact]-[revision].[ext]" resolver="local-user"
+            pubrevision="${app.version}" pubdate="${now}" status="integration" forcedeliver="true" overwrite="true" />
+        <echo message="project ${ant.project.name} published locally with version ${app.version}" />
+    </target>
+
+    <!-- ================================= 
+        target: publish-workspace              
+        ================================= -->
+    <target name="publish-workspace" depends="jar" description="--> publish this project in the local ivy repository">
+        <ivy:publish artifactspattern="${build.artifacts.dir}/[artifact]-[revision].[ext]" resolver="local-workspace"
+            pubrevision="${app.version}" pubdate="${now}" status="integration" forcedeliver="true" overwrite="true" />
+        <echo message="project ${ant.project.name} published locally with version ${app.version}" />
+    </target>
+
+    <!-- ================================= 
+        target: publish-shared              
+        ================================= -->
+    <target name="publish-shared" depends="publish-local" description="--> publish this project in the local ivy repository">
+        <ivy:publish artifactspattern="${build.artifacts.dir}/[artifact]-[revision].[ext]" resolver="local-shared"
+            pubrevision="${app.version}" pubdate="${now}" status="integration" forcedeliver="true" overwrite="${overwrite.shared}" />
+        <echo message="project ${ant.project.name} published locally with version ${app.version}" />
+    </target>
+
+
+    <!-- =================================
+        target: zip
+        ================================= -->
+    <target name="zip-doc" depends="javadoc" unless="nodoc">
+        <property name="zip.doc.file" location="${dist.artifacts}/${ant.project.name}-doc-${app.version}.zip" />
+        <zip destfile="${zip.doc.file}">
+            <zipfileset dir="${dist.doc}" />
+        </zip>
+    </target>
+
+    <target name="zip" depends="jar,zip-doc"
+        description="Generates the jar, doc and the deployment properties. The generates a jar with all required files">
+        <property name="dist.zip.file" location="${dist.dir}/${ant.project.name}-${app.version}.zip" />
+        <propertyfile file="${dist.dir}/deployment.properties">
+            <entry key="version" value="${app.version}" />
+            <entry key="jars" value="${ant.project.name}-${app.version}.jar,${project.jars.deploy},${external.jars.deploy}" />
+        </propertyfile>
+        <zip destfile="${dist.zip.file}" duplicate="preserve">
+            <zipfileset file="${zip.doc.file}" />
+            <zipfileset prefix="jars" file="${jar.name}" />
+            <zipfileset prefix="jars" dir="${ivy.lib.dir}" fullpath="false" />
+            <zipfileset prefix="deployment" file="${dist}/deployment.properties" />
+        </zip>
+    </target>
+
+
+    <!-- =================================
+        target: javadoc
+        ================================= -->
+    <target name="javadoc" description="--> generates JavaDoc" unless="nodoc">
+        <mkdir dir="${dist.doc.dir}" />
+        <javadoc access="public" author="true" classpathref="classpath.lib" destdir="${dist.doc.dir}" nodeprecated="false"
+            nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.topcoder.*" source="1.5"
+            sourcepath="${src.main.dir}" splitindex="true" use="true" version="true">
+
+            <link href="http://logging.apache.org/log4j/docs/api/" />
+            <link href="http://java.sun.com/j2se/1.5/docs/api/" />
+            <doctitle><![CDATA[<h1>Project Name</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright TopCoder Inc. 2008. All Rights Reserved.</i>]]></bottom>
+        </javadoc>
+    </target>
+
+
+    <!-- ================================= 
+        target: clean-build              
+        ================================= -->
+    <target name="clean-build" depends="init" description="--> clean the project (build)">
+        <delete includeemptydirs="true" dir="${build.dir}" />
+    </target>
+
+    <!-- ================================= 
+        target: clean-dist            
+        ================================= -->
+    <target name="clean-dist" depends="init" description="--> clean the project (dist)">
+        <delete includeemptydirs="true" dir="${dist.dir}" />
+    </target>
+
+    <!-- ================================= 
+        target: clean              
+        ================================= -->
+    <target name="clean" depends="clean-build, clean-dist" description="--> clean the project (dist, build)" />
+
+    <!-- ================================= 
+        target: clean-cache              
+        ================================= -->
+    <target name="clean-cache" depends="init" description="--> clean the ivy cache">
+        <ivy:cleancache />
+    </target>
+    
+    
+    <!-- ================================= 
+        More common recursive targets              
+        ================================= -->
+    <target name="clean-all" depends="init">
+        <recurse target="clean" />
+    </target>
+    
+    <target name="publish-worspace-all" depends="init">
+        <recurse target="publish-worspace" />
+    </target>
+</project>
