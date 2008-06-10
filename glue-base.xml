@@ -46,7 +46,6 @@
 
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="glue.lib.path" />
         <property file="${user.home}/glue/repository.properties"  prefix="repository.credential" />
-        <echoproperties prefix="repository.credential"/>
         <ivy:settings file="${ivy.settings.file}" host="coder.topcoder.com" username="${repository.credential.user}" passwd="${repository.credential.password}"/>
         <property name="ivy-loaded" value="true" />
     </target>
