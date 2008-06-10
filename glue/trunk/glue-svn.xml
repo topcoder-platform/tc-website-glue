@@ -1,0 +1,23 @@
+<project name="glue-svn" 
+         xmlns:ivy="antlib:org.apache.ivy.ant" basedir=".">
+
+    <property name="root.dir" location="${basedir}/.." />
+    <property name="glue.dir" location="${root.dir}/glue" />
+	
+	<property name="svn.url.root" value="https://coder.topcoder.com/internal"/>
+	<property file="${glue.dir}/glue-projects.properties" prefix="glue.project"/>
+		
+	<import file="${glue.dir}/glue-base.xml"/>
+    
+	
+	<!-- - - - - - - - - - - - - - - - - -
+              target: checkout
+             - - - - - - - - - - - - - - - - - -->
+    <target name="checkout" depends="init" description="checkouts dependencies">
+        <taskdef name="svn" classname="org.tigris.subversion.svnant.SvnTask" classpath="${glue.lib.path}"/>
+        <copyproperty dest="project.path.var" src="glue.project.${project}"/>
+    	<svn>
+    	    <checkout url="${svn.url.root}/${project.path.var}/trunk" destPath="${root.dir}/${project.path.var}" />
+        </svn>
+    </target>
+</project>
