@@ -1,0 +1,30 @@
+<project name="glue-macros" basedir=".">
+
+    <macrodef name="compile">
+        <attribute name="srcdir" default="${src.main.dir}" />
+        <attribute name="destdir" default="${build.classes.dir}" />
+        <attribute name="target" default="${compile.source}" />
+        <element name="includes" />
+        <element name="extra-compile" optional="true" />
+        <sequential>
+            <mkdir dir="@{destdir}" />
+            <depend srcdir="@{srcdir}" destdir="@{destdir}" cache="${build.dir}/cache">
+                <includes />
+            </depend>
+            <javac destdir="@{destdir}" srcdir="@{srcdir}" optimize="${compile.optimize}" source="@{target}" target="@{target}" debug="${compile.debug}">
+                <classpath refid="classpath.lib" />
+                <includes />
+                <extra-compile />
+            </javac>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="copyproperty">
+        <attribute name="src" />
+        <attribute name="dest" />
+        <sequential>
+            <property name="@{dest}" value="${@{src}}" />
+        </sequential>
+    </macrodef>
+
+</project>
