@@ -91,7 +91,7 @@
         </sequential>
     </macrodef>
 
-    <target name="recurse" depends="init">
+    <target name="recurse" depends="init" description="--> run the target (sysprop:target) in this projects and in all dependee subprojects" >
         <property name="target" value="" />
         <recurse target="${target}" />
     </target>
@@ -105,14 +105,14 @@
         <property name="compile.debug" value="on" />
     </target>
 
-    <target name="images" depends="init" description="--> compiles source main" if="images-exist">
+    <target name="images" depends="init" if="images-exist" unless="skip.images">
         <echo level="debug">Copying images</echo>
         <copy todir="${build.classes.dir}" filtering="false">
             <fileset dir="${src.images.dir}" />
         </copy>
     </target>
 
-    <target name="resources" depends="init" description="--> compiles source main" if="resources-exist" unless="skip.resources">
+    <target name="resources" depends="init" if="resources-exist" unless="skip.resources">
         <echo level="debug">Copying resources</echo>
         <copy todir="${build.classes.dir}" filtering="true">
             <fileset dir="${src.resources.dir}" />
@@ -178,7 +178,7 @@
     <!-- ================================= 
         target: publish-local              
         ================================= -->
-    <target name="publish-local" depends="publish-workspace" description="--> publish this project in the local ivy repository">
+    <target name="publish-local" depends="publish-workspace" description="--> publish this project in the user local ivy repository">
         <ivy:publish artifactspattern="${build.artifacts.dir}/[artifact]-[revision].[ext]" resolver="local-user"
             pubrevision="${app.version}" pubdate="${now}" status="integration" forcedeliver="true" overwrite="true" />
         <echo message="project ${ant.project.name} published locally with version ${app.version}" />
@@ -187,7 +187,7 @@
     <!-- ================================= 
         target: publish-workspace              
         ================================= -->
-    <target name="publish-workspace" depends="jar" description="--> publish this project in the local ivy repository">
+    <target name="publish-workspace" depends="jar" description="--> publish this project in the workspace ivy repository">
         <ivy:publish artifactspattern="${build.artifacts.dir}/[artifact]-[revision].[ext]" resolver="local-workspace"
             pubrevision="${app.version}" pubdate="${now}" status="integration" forcedeliver="true" overwrite="true" />
         <echo message="project ${ant.project.name} published locally with version ${app.version}" />
@@ -196,7 +196,7 @@
     <!-- ================================= 
         target: publish-shared              
         ================================= -->
-    <target name="publish-shared" depends="publish-local" description="--> publish this project in the local ivy repository">
+    <target name="publish-shared" depends="publish-local" description="--> publish this project in the shared local ivy repository">
         <ivy:publish artifactspattern="${build.artifacts.dir}/[artifact]-[revision].[ext]" resolver="local-shared"
             pubrevision="${app.version}" pubdate="${now}" status="integration" forcedeliver="true" overwrite="${overwrite.shared}" />
         <echo message="project ${ant.project.name} published locally with version ${app.version}" />
@@ -206,15 +206,15 @@
     <!-- =================================
         target: zip
         ================================= -->
-    <target name="zip-doc" depends="javadoc" unless="nodoc">
-        <property name="zip.doc.file" location="${dist.artifacts}/${ant.project.name}-doc-${app.version}.zip" />
+    <target name="zip-doc" depends="javadoc" unless="nodoc" description="--> generates JavaDoc for the main source folder">
+        <property name="zip.doc.file" location="${dist.artifacts.dir}/${ant.project.name}-doc-${app.version}.zip" />
         <zip destfile="${zip.doc.file}">
-            <zipfileset dir="${dist.doc}" />
+            <zipfileset dir="${dist.doc.dir}" />
         </zip>
     </target>
 
     <target name="zip" depends="jar,zip-doc"
-        description="Generates the jar, doc and the deployment properties. The generates a jar with all required files">
+        description="Generates the jar, doc and the deployment properties. The generates a zip with all required files">
         <property name="dist.zip.file" location="${dist.dir}/${ant.project.name}-${app.version}.zip" />
         <propertyfile file="${dist.dir}/deployment.properties">
             <entry key="version" value="${app.version}" />
@@ -223,7 +223,7 @@
         <zip destfile="${dist.zip.file}" duplicate="preserve">
             <zipfileset file="${zip.doc.file}" />
             <zipfileset prefix="jars" file="${jar.name}" />
-            <zipfileset prefix="jars" dir="${ivy.lib.dir}" fullpath="false" />
+            <zipfileset prefix="jars" dir="${build.lib.dir}" fullpath="false" />
             <zipfileset prefix="deployment" file="${dist}/deployment.properties" />
         </zip>
     </target>
@@ -281,6 +281,6 @@
     </target>
     
     <target name="publish-worspace-all" depends="init">
-        <recurse target="publish-worspace" />
+        <recurse target="publish-workspace" />
     </target>
 </project>
