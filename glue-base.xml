@@ -21,6 +21,7 @@
     <property name="build.classes.dir" value="${build.dir}/classes" />
     <property name="build.lib.dir" value="${build.dir}/libs" />
     <property name="build.artifacts.dir" location="${build.dir}/artifacts" />
+    <property environment="env"/>
 
     <dirname file="${ant.file.glue-base}" property="glue.dir" />
     <property file="${glue.dir}/ivy.properties" />
