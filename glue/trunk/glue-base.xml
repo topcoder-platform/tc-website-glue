@@ -281,7 +281,7 @@
         <recurse target="clean" />
     </target>
     
-    <target name="publish-worspace-all" depends="init" description="--> publish this and all dependents projects">
+    <target name="publish-workspace-all" depends="init" description="--> publish this and all dependents projects">
         <recurse target="publish-workspace" />
     </target>
 </project>
