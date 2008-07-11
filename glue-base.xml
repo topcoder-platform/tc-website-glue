@@ -277,11 +277,11 @@
     <!-- ================================= 
         More common recursive targets              
         ================================= -->
-    <target name="clean-all" depends="init">
+    <target name="clean-all" depends="init" description="--> clean this and all dependents projects">
         <recurse target="clean" />
     </target>
     
-    <target name="publish-worspace-all" depends="init">
+    <target name="publish-worspace-all" depends="init" description="--> publish this and all dependents projects">
         <recurse target="publish-workspace" />
     </target>
 </project>
