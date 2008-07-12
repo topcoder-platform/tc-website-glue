@@ -3,6 +3,7 @@
     <property name="glue.dir" location="${root.dir}/glue" />
 
     <import file="${glue.dir}/glue-base.xml" />
+    <import file="${glue.dir}/glue-svn.xml" />
     
     <target name="compile" depends="glue-base.compile" />
 </project>

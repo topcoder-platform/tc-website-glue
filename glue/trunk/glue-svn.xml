@@ -9,15 +9,30 @@
 		
 	<import file="${glue.dir}/glue-base.xml"/>
     
+	<target name="init" depends="glue-base.init" unless="svn-init">
+	   <taskdef name="svn" classname="org.tigris.subversion.svnant.SvnTask" classpathref="glue.lib.path"/>
+	   <property name="svn-init" value="true"/>
+	</target>
 	
 	<!-- - - - - - - - - - - - - - - - - -
               target: checkout
              - - - - - - - - - - - - - - - - - -->
-    <target name="checkout" depends="init" description="checkouts dependencies">
-        <taskdef name="svn" classname="org.tigris.subversion.svnant.SvnTask" classpathref="glue.lib.path"/>
+    <target name="checkout" depends="glue-svn.init" description="checkouts dependencies">
         <copyproperty dest="project.path.var" src="glue.project.${project}"/>
     	<svn>
     	    <checkout url="${svn.url.root}/${project.path.var}/trunk" destPath="${root.dir}/${project.path.var}" />
         </svn>
+    </target>
+    
+    <target name="update" depends="glue-svn.init" description="--> update current project">
+        <echo>Test</echo>
+        <copyproperty dest="project.path.var" src="glue.project.${ant.project.name}"/>
+        <svn>
+            <update dir="${root.dir}/${project.path.var}" />
+        </svn>
+    </target>
+    
+    <target name="update-all" depends="glue-svn.init" description="--> update current project and its dependencies">
+        <recurse target="update" />
     </target>
 </project>
