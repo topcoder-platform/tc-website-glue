@@ -13,14 +13,19 @@
     <property name="src.test.dir" location="${src.dir}/test" />
     <property name="src.resources.dir" location="${basedir}/resources" />
     <property name="src.images.dir" location="${basedir}/images" />
+    
     <property name="dist.dir" location="${basedir}/dist" />
     <property name="dist.artifacts.dir" location="${dist.dir}/artifacts" />
     <property name="dist.doc.dir" location="${dist.dir}/doc" />
     <property name="dist.lib.dir" value="${dist.dir}/libs" />
+    
     <property name="build.dir" value="${basedir}/build" />
     <property name="build.classes.dir" value="${build.dir}/classes" />
     <property name="build.lib.dir" value="${build.dir}/libs" />
     <property name="build.artifacts.dir" location="${build.dir}/artifacts" />
+    
+    <property name="ide.lib.destdir" value="${root.dir}/artifacts" />
+    
     <property environment="env"/>
 
     <dirname file="${ant.file.glue-base}" property="glue.dir" />
@@ -275,6 +280,7 @@
         <ivy:cleancache />
     </target>
     
+ 
     
     <!-- ================================= 
         More common recursive targets              
@@ -286,4 +292,20 @@
     <target name="publish-workspace-all" depends="init" description="--> publish this and all dependents projects">
         <recurse target="publish-workspace" />
     </target>
+    
+    <target name="artifacts-all" depends="init" description="--> publish this and all dependents projects">
+        <recurse target="artifacts" />
+    </target>
+    
+    <!-- ================================= 
+        IDE Targets         
+        ================================= -->
+    <target name="artifacts" depends="resolve" description="--> retrieve all artifacts and copies them to a root for IDE usage">
+        <mkdir dir="${ide.lib.destdir}"/>
+        <copy todir="${ide.lib.destdir}">
+            <fileset dir="${ivy.lib.dir}"/>
+        </copy>
+    </target>       
+        
+        
 </project>
