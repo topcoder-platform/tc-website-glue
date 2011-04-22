@@ -54,7 +54,11 @@
 
 		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="glue.lib.path" />
 		<property file="${user.home}/.glue/repository.properties" prefix="repository.credential" />
-		<ivy:settings file="${ivy.settings.file}" host="coder.topcoder.com" username="${repository.credential.user}" passwd="${repository.credential.password}" />
+		<ivy:settings file="${ivy.settings.file}">
+			<credentials host="coder.topcoder.com" realm="TopCoder Internal Subversion Repository" username="${repository.credential.user}" passwd="${repository.credential.password}"/>
+			<credentials host="coder.topcoder.com:443" realm="TopCoder Internal Subversion Repository" username="${repository.credential.user}" passwd="${repository.credential.password}"/>
+		</ivy:settings>
+		
 		<property name="ivy-loaded" value="true" />
 	</target>
 
@@ -179,8 +183,8 @@
 	<!-- ================================= 
         target: publish              
         ================================= -->
-	<target name="publish" depends="jar" description="--> publish this project in the ivy repository">
-		<ivy:publish artifactspattern="${jar.name}" resolver="internal-artifacts" pubrevision="${app.version}" status="release" />
+	<target name="publish" depends="publish-local" description="--> publish this project in the ivy repository">
+		<ivy:publish artifactspattern="${build.artifacts.dir}/[artifact]-[revision].[ext]" resolver="internal-artifacts" pubrevision="${app.version}" status="release" update="true" />
 		<echo message="project ${ant.project.name} released with version ${app.version}" />
 	</target>
 

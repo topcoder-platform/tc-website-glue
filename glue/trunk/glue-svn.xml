@@ -35,14 +35,11 @@
     <target name="tag" depends="glue-svn.init" description="--> tag current project">
         <copyproperty dest="project.path.var" src="glue.project.${ant.project.name}"/>
         <svn>
-            <copy srcPath="${root.dir}/${project.path.var}" destUrl="${svn.url.root}/${project.path.var}/tags/${ant.project.name}-${app.version}" comment="new version tag ${app.version}"/>
+            <copy srcUrl="${svn.url.root}/${project.path.var}/trunk" destUrl="${svn.url.root}/${project.path.var}/tags/${ant.project.name}-${app.version}" message="new version tag ${app.version}"/>
         </svn>
     </target>
 	
-    <target name="tag-all" depends="glue-svn.init" description="--> tag current project and its dependencies">
-        <recurse target="tag" />
-    </target>
-    
+   
     <target name="update-all" depends="glue-svn.init" description="--> update current project and its dependencies">
         <recurse target="update" />
     </target>
