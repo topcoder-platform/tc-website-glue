@@ -6,5 +6,4 @@
     <import file="${glue.dir}/glue-svn.xml" />
     
     <target name="compile" depends="glue-base.compile" />
-	<target name="version" depends="glue-svn.version"/>
 </project>
