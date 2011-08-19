@@ -58,7 +58,7 @@
 			<credentials host="coder.topcoder.com" realm="TopCoder Internal Subversion Repository" username="${repository.credential.user}" passwd="${repository.credential.password}"/>
 			<credentials host="coder.topcoder.com:443" realm="TopCoder Internal Subversion Repository" username="${repository.credential.user}" passwd="${repository.credential.password}"/>
 		</ivy:settings>
-
+		
 		<property name="ivy-loaded" value="true" />
 	</target>
 
@@ -98,7 +98,6 @@
 				<fileset dir="${root.dir}" includes="**/build-ivy.xml" excludes="web/**,gd/**" />
 			</ivy:buildlist>
 			<subant target="@{target}" buildpathref="build-path" inheritall="@{inheritall}" inheritrefs="@{inheritrefs}">
-				<property name="use.svn.version" value="${use.svn.version}"/>
 				<inner-subant />
 			</subant>
 		</sequential>
@@ -252,67 +251,62 @@
 				<![CDATA[<h1>Project Name</h1>]]></doctitle>
 		<bottom>
 			<![CDATA[<i>Copyright TopCoder Inc. 2008. All Rights Reserved.</i>]]></bottom>
-		</javadoc>
-	</target>
-	
-	
-	<!-- ================================= 
-	        target: clean-build              
-	        ================================= -->
-	<target name="clean-build" depends="init" description="--> clean the project (build)">
-		<delete includeemptydirs="true" dir="${build.dir}" />
-	</target>
-	
-	<!-- ================================= 
-	        target: clean-dist            
-	        ================================= -->
-	<target name="clean-dist" depends="init" description="--> clean the project (dist)">
-		<delete includeemptydirs="true" dir="${dist.dir}" />
-	</target>
-	
-	<!-- ================================= 
-	        target: clean              
-	        ================================= -->
-	<target name="clean" depends="clean-build, clean-dist" description="--> clean the project (dist, build)" />
-	
-	<!-- ================================= 
-	        target: clean-cache              
-	        ================================= -->
-	<target name="clean-cache" depends="init" description="--> clean the ivy cache">
-		<ivy:cleancache />
-	</target>
-	
-	
-	
-	<!-- ================================= 
-	        More common recursive targets              
-	        ================================= -->
-	<target name="clean-all" depends="init" description="--> clean this and all dependents projects">
-		<recurse target="clean" />
-	</target>
-	
-	<target name="publish-workspace-all" depends="init" description="--> publish this and all dependents projects">
-		<recurse target="publish-workspace" />
-	</target>
-	
-	<target name="artifacts-all" depends="init" description="--> publish this and all dependents projects">
-		<recurse target="artifacts" />
-	</target>
-	
-	<!-- ================================= 
-	        IDE Targets         
-	        ================================= -->
-	<target name="artifacts" depends="resolve" description="--> retrieve all artifacts and copies them to a root for IDE usage">
-		<mkdir dir="${ide.lib.destdir}" />
-		<copy todir="${ide.lib.destdir}">
-			<fileset dir="${ivy.lib.dir}" />
-		</copy>
-	</target>
-	
-	<target name="make-pom" depends="init">
-		<ivy:makepom ivyfile="${src.file}" pomfile="${dst.file}">
-			 <mapping conf="default" scope="compile"/>
-		</ivy:makepom>
-	</target>
+</javadoc>
+</target>
+
+
+<!-- ================================= 
+        target: clean-build              
+        ================================= -->
+<target name="clean-build" depends="init" description="--> clean the project (build)">
+<delete includeemptydirs="true" dir="${build.dir}" />
+</target>
+
+<!-- ================================= 
+        target: clean-dist            
+        ================================= -->
+<target name="clean-dist" depends="init" description="--> clean the project (dist)">
+<delete includeemptydirs="true" dir="${dist.dir}" />
+</target>
+
+<!-- ================================= 
+        target: clean              
+        ================================= -->
+<target name="clean" depends="clean-build, clean-dist" description="--> clean the project (dist, build)" />
+
+<!-- ================================= 
+        target: clean-cache              
+        ================================= -->
+<target name="clean-cache" depends="init" description="--> clean the ivy cache">
+<ivy:cleancache />
+</target>
+
+
+
+<!-- ================================= 
+        More common recursive targets              
+        ================================= -->
+<target name="clean-all" depends="init" description="--> clean this and all dependents projects">
+<recurse target="clean" />
+</target>
+
+<target name="publish-workspace-all" depends="init" description="--> publish this and all dependents projects">
+<recurse target="publish-workspace" />
+</target>
+
+<target name="artifacts-all" depends="init" description="--> publish this and all dependents projects">
+<recurse target="artifacts" />
+</target>
+
+<!-- ================================= 
+        IDE Targets         
+        ================================= -->
+<target name="artifacts" depends="resolve" description="--> retrieve all artifacts and copies them to a root for IDE usage">
+<mkdir dir="${ide.lib.destdir}" />
+<copy todir="${ide.lib.destdir}">
+	<fileset dir="${ivy.lib.dir}" />
+</copy>
+</target>
+
 
 </project>

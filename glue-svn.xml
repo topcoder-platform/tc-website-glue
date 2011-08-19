@@ -10,7 +10,6 @@
 	<import file="${glue.dir}/glue-base.xml"/>
     
 	<target name="init" depends="glue-base.init" unless="svn-init">
-	   <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="glue.lib.path"/>
 	   <taskdef name="svn" classname="org.tigris.subversion.svnant.SvnTask" classpathref="glue.lib.path"/>
 	   <property name="svn-init" value="true"/>
 	</target>
@@ -44,18 +43,4 @@
     <target name="update-all" depends="glue-svn.init" description="--> update current project and its dependencies">
         <recurse target="update" />
     </target>
-
-	<target name="extract-svn-version" depends="glue-svn.init" unless="app.version">
-		<svn>
-			<info target="${basedir}"/>
-		</svn>
-		<propertyregex property="app.version"
-		              input="${svn.info.url}"
-              		      regexp="(.*)\-([0-9].*)"
-			      replace="\2"
-		              casesensitive="false" />
-		<echo>VERSION: ${app.version}</echo>
-	</target>
-	
-	<target name="version" depends="init,extract-svn-version,glue-base.version" unless="ivy.new.revision" if="use.svn.version"/>
 </project>
