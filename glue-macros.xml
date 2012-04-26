@@ -11,7 +11,7 @@
             <depend srcdir="@{srcdir}" destdir="@{destdir}" cache="${build.dir}/cache">
                 <includes />
             </depend>
-            <javac destdir="@{destdir}" srcdir="@{srcdir}" optimize="${compile.optimize}" source="@{target}" target="@{target}" debug="${compile.debug}">
+            <javac destdir="@{destdir}" srcdir="@{srcdir}" optimize="${compile.optimize}" source="@{target}" target="@{target}" debug="${compile.debug}" fork="yes">
                 <classpath refid="classpath.lib" />
                 <includes />
                 <extra-compile />
