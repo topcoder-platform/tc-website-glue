@@ -65,26 +65,6 @@
 	<target name="init" depends="load-ivy">
 		<available property="images-exist" file="${src.images.dir}/." />
 		<available property="resources-exist" file="${src.resources.dir}/." />
-		<!-- Adding these here for CI for the Marathan Code -->
-		<exec command="svn co https://coder.topcoder.com/internal/comp-eng/arena-client/trunk/ ${root.dir}/comp-eng/arena-client"/>
-		<exec command="svn co https://coder.topcoder.com/internal/comp-eng/arena-shared/trunk/ ${root.dir}/comp-eng/arena-shared"/>
-		<exec command="svn co https://coder.topcoder.com/internal/comp-eng/client-common/trunk/ ${root.dir}/comp-eng/client-common"/>
-		<exec command="svn co https://coder.topcoder.com/internal/comp-eng/fraud/trunk/ ${root.dir}/comp-eng/fraud"/>
-		<exec command="svn co https://coder.topcoder.com/internal/comp-eng/mpsqas-client/trunk/ ${root.dir}/comp-eng/mpsqas-client"/>
-		<exec command="svn co https://coder.topcoder.com/internal/farm-client/trunk/ ${root.dir}/farm-client"/>
-		<exec command="svn co https://coder.topcoder.com/internal/farm-deployer/trunk/ ${root.dir}/farm-deployer"/>
-		<exec command="svn co https://coder.topcoder.com/internal/farm-server/trunk/ ${root.dir}/farm-server"/>
-		<exec command="svn co https://coder.topcoder.com/internal/farm-shared/trunk/ ${root.dir}/farm-shared"/>
-		<exec command="svn co https://coder.topcoder.com/internal/libs/client-socket/trunk/ ${root.dir}/libs/client-socket"/>
-		<exec command="svn co https://coder.topcoder.com/internal/libs/compeng-common/trunk/ ${root.dir}/libs/compeng-common"/>
-		<exec command="svn co https://coder.topcoder.com/internal/libs/concurrent/trunk/ ${root.dir}/libs/concurrent"/>
-		<exec command="svn co https://coder.topcoder.com/internal/libs/custom-serialization/trunk/ ${root.dir}/libs/custom-serialization"/>
-		<exec command="svn co https://coder.topcoder.com/internal/libs/encoder/trunk/ ${root.dir}/libs/encoder"/>
-		<exec command="svn co https://coder.topcoder.com/internal/libs/http-tunnel/client/trunk/ ${root.dir}/libs/http-tunnel/client"/>
-		<exec command="svn co https://coder.topcoder.com/internal/libs/http-tunnel/server/trunk/ ${root.dir}/libs/http-tunnel/server"/>
-		<exec command="svn co https://coder.topcoder.com/internal/libs/logging/trunk/ ${root.dir}/libs/logging"/>
-		<exec command="svn co https://coder.topcoder.com/internal/libs/nbio-listener/trunk/ ${root.dir}/libs/nbio-listener"/>
-		<exec command="svn co https://coder.topcoder.com/internal/shared/trunk/ ${root.dir}/shared"/>
 	</target>
 
 	<!-- ================================= 
