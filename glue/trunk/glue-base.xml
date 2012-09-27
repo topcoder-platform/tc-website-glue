@@ -53,7 +53,7 @@
 		</path>
 
 		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="glue.lib.path" />
-		<property file="${user.home}/.glue/repository.properties" prefix="repository.credential" />
+		<property file="${glue.dir}/repository.properties" prefix="repository.credential" />
 		<ivy:settings file="${ivy.settings.file}">
 			<credentials host="coder.topcoder.com" realm="TopCoder Internal Subversion Repository" username="${repository.credential.user}" passwd="${repository.credential.password}"/>
 			<credentials host="coder.topcoder.com:443" realm="TopCoder Internal Subversion Repository" username="${repository.credential.user}" passwd="${repository.credential.password}"/>
