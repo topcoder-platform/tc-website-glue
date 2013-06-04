@@ -30,6 +30,7 @@
 
 	<dirname file="${ant.file.glue-base}" property="glue.dir" />
 	<property file="${glue.dir}/ivy.properties" />
+	<property file="${glue.dir}/glue-versions.properties" />
 
 	<import file="${glue.dir}/glue-macros.xml" />
 
@@ -154,6 +155,15 @@
         target: version
         - - - - - - - - - -  - - - - - - - - -  -->
 	<target name="version" depends="init" unless="ivy.new.revision">
+		<copyproperty dest="sub.project.app.version" src="${ant.project.name}.app.version" />		
+		<condition property="app.version" value="${sub.project.app.version}">
+		       <and>
+			   <isset property="sub.project.app.version" />
+			   <not>
+			      <contains string="${sub.project.app.version}" substring="app.version" />
+			   </not>
+			</and>
+		</condition>
 		<condition property="overwrite.shared">
 			<equals arg1="${app.version}" arg2="SNAPSHOT" />
 		</condition>
