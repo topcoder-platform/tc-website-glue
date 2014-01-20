@@ -173,8 +173,17 @@
 	<!-- - - - - - - - - - - - - - - - - -
         target: jar
         - - - - - - - - - - - - - - - - - -->
-	<target name="jar" depends="compile, jar-only" description="--> compiles and then generates jar" />
+    <target name="jar" depends="compile, jar-only, update_jar_security" description="--> compiles and then generates jar" />
 
+    <target name="update_jar_security" if="is.need.update.jar.security">
+       <property name="jar.name" value="${build.artifacts.dir}/${ant.project.name}-${app.version}.jar" />
+       <jar destfile="${jar.name}" update="true">
+           <manifest>
+              <attribute name="Permissions" value="${permission_type}"/>
+              <attribute name="Codebase" value="${code_base}"/>
+           </manifest>
+      </jar>
+    </target>
 	<target name="jar-only" depends="version" description="--> generates jar" unless="jar_set">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.artifacts.dir}" />
