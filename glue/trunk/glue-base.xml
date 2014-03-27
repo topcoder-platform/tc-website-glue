@@ -72,7 +72,7 @@
         target: resolve              
         ================================= -->
 	<target name="resolve" description="--> retrieve dependencies with ivy" depends="init">
-		<ivy:retrieve sync="true" />
+		<ivy:retrieve sync="true" type="jar" />
 		<mkdir dir="${ivy.lib.dir}" />
 		<ivy:artifactproperty name="filename.[artifact]" value="[artifact]-[revision].[ext]" />
 	</target>
