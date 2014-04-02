@@ -18,23 +18,38 @@
               target: checkout
              - - - - - - - - - - - - - - - - - -->
     <target name="checkout" depends="glue-svn.init" description="checkouts dependencies">
+         <if>
+           <not>  
+              <isset property="project"/>
+           </not>
+            <then>
+                <fail message="Please specify your project name 'ant checkout -Dproject=[your_project_name]."/>
+            </then>
+        </if>
         <copyproperty dest="project.path.var" src="glue.project.${project}"/>
-    	<svn>
+    	<svn username="${repository.credential.user}" password="${repository.credential.password}">
     	    <checkout url="${svn.url.root}/${project.path.var}/trunk" destPath="${root.dir}/${project.path.var}" />
         </svn>
     </target>
     
     <target name="update" depends="glue-svn.init" description="--> update current project">
         <echo>Test</echo>
-        <copyproperty dest="project.path.var" src="glue.project.${ant.project.name}"/>
-        <svn>
+        <if>
+            <equals arg1="${ant.project.name}" arg2="glue" />
+            <then>
+                <fail message="You can't execute this command in glue project."/>
+            </then>
+        </if>
+        <mappingproperty src="glue.project.${ant.project.name}" value1="glue.project.classes"
+            value2="glue.project.app" dest="project.path.var"/>
+        <svn username="${repository.credential.user}" password="${repository.credential.password}">
             <update dir="${root.dir}/${project.path.var}" />
         </svn>
     </target>
 	
     <target name="tag" depends="glue-svn.init" description="--> tag current project">
         <copyproperty dest="project.path.var" src="glue.project.${ant.project.name}"/>
-        <svn>
+        <svn username="${repository.credential.user}" password="${repository.credential.password}">
             <copy srcUrl="${svn.url.root}/${project.path.var}/trunk" destUrl="${svn.url.root}/${project.path.var}/tags/${ant.project.name}-${app.version}" message="new version tag ${app.version}"/>
         </svn>
     </target>

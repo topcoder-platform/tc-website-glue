@@ -4,6 +4,7 @@
 
     <import file="${glue.dir}/glue-base.xml" />
     <import file="${glue.dir}/glue-svn.xml" />
+    <import file="${glue.dir}/glue-git.xml" />
     
     <target name="compile" depends="glue-base.compile" />
 </project>
