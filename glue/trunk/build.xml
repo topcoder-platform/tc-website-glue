@@ -5,5 +5,5 @@
     <property name="glue.dir" location="${root.dir}/glue" />
     
     <import file="${glue.dir}/glue-svn.xml"/>
-    
+    <import file="${glue.dir}/glue-git.xml"/>
 </project>

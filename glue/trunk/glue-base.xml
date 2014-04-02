@@ -64,6 +64,7 @@
 	</target>
 
 	<target name="init" depends="load-ivy">
+	        <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="glue.lib.path"/>
 		<available property="images-exist" file="${src.images.dir}/." />
 		<available property="resources-exist" file="${src.resources.dir}/." />
 	</target>
