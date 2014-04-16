@@ -152,26 +152,28 @@
 		<property name="glue_base.compile_set" value="true" />
 	</target>
 
-	<!-- - - - - - - - - - -  - - - - - - - - - 
+    <!-- - - - - - - - - - -  - - - - - - - - - 
         target: version
-        - - - - - - - - - -  - - - - - - - - -  -->
-	<target name="version" depends="init" unless="ivy.new.revision">
-		<copyproperty dest="sub.project.app.version" src="${ant.project.name}.app.version" />		
-		<condition property="app.version" value="${sub.project.app.version}">
-		       <and>
-			   <isset property="sub.project.app.version" />
-			   <not>
-			      <contains string="${sub.project.app.version}" substring="app.version" />
-			   </not>
-			</and>
-		</condition>
-		<condition property="overwrite.shared">
-			<equals arg1="${app.version}" arg2="SNAPSHOT" />
-		</condition>
-		<property name="app.version" value="SNAPSHOT" />
-	</target>
+     - - - - - - - - - -  - - - - - - - - -  -->
+    <target name="version" depends="init" unless="ivy.new.revision">
+        <copyproperty dest="sub.project.app.version" src="${ant.project.name}.app.version" />
+	<if>
+            <and>
+               <isset property="sub.project.app.version" />
+               <not>
+                  <contains string="${sub.project.app.version}" substring="app.version" />
+               </not>
+            </and>
+            <then>
+                <property name="app.version" value="${sub.project.app.version}" />
+            </then>
+            <else>
+                <property name="app.version" value="SNAPSHOT" />
+            </else>
+        </if>
+    </target>
 
-	<!-- - - - - - - - - - - - - - - - - -
+    <!-- - - - - - - - - - - - - - - - - -
         target: jar
         - - - - - - - - - - - - - - - - - -->
     <target name="jar" depends="compile, jar-only, update_jar_security" description="--> compiles and then generates jar" />
@@ -228,7 +230,7 @@
         target: publish-shared              
         ================================= -->
 	<target name="publish-shared" depends="publish-local" description="--> publish this project in the shared local ivy repository">
-		<ivy:publish artifactspattern="${build.artifacts.dir}/[artifact]-[revision].[ext]" resolver="local-shared" pubrevision="${app.version}" pubdate="${now}" status="integration" forcedeliver="true" overwrite="${overwrite.shared}" />
+		<ivy:publish artifactspattern="${build.artifacts.dir}/[artifact]-[revision].[ext]" resolver="local-shared" pubrevision="${app.version}" pubdate="${now}" status="integration" forcedeliver="true" overwrite="true" />
 		<echo message="project ${ant.project.name} published locally with version ${app.version}" />
 	</target>
 
