@@ -11,7 +11,7 @@
             <depend srcdir="@{srcdir}" destdir="@{destdir}" cache="${build.dir}/cache">
                 <includes />
             </depend>
-            <javac destdir="@{destdir}" srcdir="@{srcdir}" optimize="${compile.optimize}" source="@{target}" target="@{target}" debug="${compile.debug}" memoryInitialSize="512m" memoryMaximumSize="512m" fork="yes">
+            <javac destdir="@{destdir}" srcdir="@{srcdir}" optimize="${compile.optimize}" source="@{target}" target="@{target}" debug="${compile.debug}" memoryInitialSize="512m" memoryMaximumSize="512m" fork="yes" includeantruntime="false">
                 <classpath refid="classpath.lib" />
                 <includes />
                 <extra-compile />
