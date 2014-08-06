@@ -194,7 +194,7 @@
                         	<pathelement location="${root.dir}/libs/custom-serialization/build/test-classes"/>
                         	<pathelement location="${root.dir}/libs/compeng-common/build/test-classes"/>
 			</classpath>
-			<formatter type="brief"/>
+			<formatter type="xml"/>
 			<batchtest fork="no" todir="${build.test-results.dir}">
 				<fileset dir="${src.test.dir}">
 					<include name="**/*Test.java"/>
