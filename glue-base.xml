@@ -170,6 +170,7 @@
 			<!-- these are used in other modules -->
                         <pathelement location="${root.dir}/farm-shared/build/test-classes"/>
                         <pathelement location="${root.dir}/libs/custom-serialization/build/test-classes"/>
+                        <pathelement location="${root.dir}/libs/compeng-common/build/test-classes"/>
                 </path>
 
 		<compile srcdir="${src.test.dir}" destdir="${build.test-classes.dir}" classpathref="test-classpath">
@@ -187,9 +188,11 @@
 				<pathelement location="${build.test-classes.dir}"/>
 				<pathelement path="${classpath.lib}"/>
                	         	<pathelement location="${build.classes.dir}"/>
-               	         <fileset dir="${build.lib.dir}" includes="**/*.jar"/>
+               	         	<fileset dir="${build.lib.dir}" includes="**/*.jar"/>
 				<!-- hard code common test classes -->
-               	         <pathelement location="${root.dir}/farm-shared/build/test-classes"/>
+               	         	<pathelement location="${root.dir}/farm-shared/build/test-classes"/>
+                        	<pathelement location="${root.dir}/libs/custom-serialization/build/test-classes"/>
+                        	<pathelement location="${root.dir}/libs/compeng-common/build/test-classes"/>
 			</classpath>
 			<formatter type="brief"/>
 			<batchtest fork="no" todir="${build.test-results.dir}">
