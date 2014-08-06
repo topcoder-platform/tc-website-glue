@@ -21,6 +21,8 @@
 
 	<property name="build.dir" value="${basedir}/build" />
 	<property name="build.classes.dir" value="${build.dir}/classes" />
+	<property name="build.test-classes.dir" value="${build.dir}/test-classes" />
+	<property name="build.test-results.dir" value="${build.dir}/test-results" />
 	<property name="build.lib.dir" value="${build.dir}/libs" />
 	<property name="build.artifacts.dir" location="${build.dir}/artifacts" />
 
@@ -146,9 +148,50 @@
 				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
+
+		<available property="has-tests" file="${src.test.dir}"/>
+                <antcall target="compile-tests"/>
+
+
 		<antcall target="resources" />
 		<antcall target="images" />
 		<property name="glue_base.compile_set" value="true" />
+	</target>
+
+	<target name="compile-tests" if="has-tests">
+                <path id="test-classpath">
+                	<pathelement path="${classpath.lib}"/>
+                	<pathelement location="${build.classes.dir}"/>
+	                <fileset dir="${build.lib.dir}" includes="**/*.jar"/>
+                        <pathelement location="${root.dir}/farm-shared/build/test-classes"/>
+                </path>
+
+		<compile srcdir="${src.test.dir}" destdir="${build.test-classes.dir}" classpathref="test-classpath">
+			<includes>
+				<include name="**/*.java" />
+			</includes>
+		</compile>
+
+	</target>
+
+	<target name="unit-test" depends="compile" description="run junit tests">
+		<mkdir dir="${build.test-results.dir}"/>
+		<junit printsummary="yes" includeantruntime="no" showoutput="no" haltonerror="yes">
+			<classpath>
+				<pathelement location="${build.test-classes.dir}"/>
+				<pathelement path="${classpath.lib}"/>
+               	         <pathelement location="${build.classes.dir}"/>
+               	         <fileset dir="${build.lib.dir}" includes="**/*.jar"/>
+				<!-- hard code common test classes -->
+               	         <pathelement location="${root.dir}/farm-shared/build/test-classes"/>
+			</classpath>
+			<formatter type="brief"/>
+			<batchtest fork="no" todir="${build.test-results.dir}">
+				<fileset dir="${src.test.dir}">
+					<include name="**/*Test.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
 	</target>
 
     <!-- - - - - - - - - - -  - - - - - - - - - 
@@ -328,6 +371,23 @@
 	<fileset dir="${ivy.lib.dir}" />
 </copy>
 </target>
+
+<!--
+<target name="unit-test" depends="compile" description="run junit tests">
+<junit printsummary="yes" includeantruntime="no" showoutput="yes">
+<classpath>
+<pathelement location="${build.classes.dir}"/>
+<fileset dir="${build.lib.dir}" includes="**/*.jar"/>
+</classpath>
+<formatter type="brief"/>
+<batchtest fork="no" todir="/tmp">
+<fileset dir="${src.test.dir}">
+<include name="**/*Test.java"/>
+</fileset>
+</batchtest>
+</junit>
+</target>
+-->
 
 
 </project>
