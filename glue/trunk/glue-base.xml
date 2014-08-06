@@ -136,6 +136,13 @@
 
 	<target name="prepare-compile" depends="compile.properties, resolve" />
 
+
+	<pathconvert property="has-tests" setonempty="false" pathsep=" ">
+		<path>
+			<fileset dir="${src.test.dir}" includes="**/*.java" erroronmissingdir="false"/>
+		</path>
+	</pathconvert>
+
 	<target name="compile" depends="prepare-compile" description="--> compiles source main" unless="glue_base.compile_set">
 		<echo level="info">COMPILING ${ant.project.name} --------------------------------------------------</echo>
 		<compile>
@@ -149,10 +156,7 @@
 			</fileset>
 		</copy>
 
-		<available property="has-tests" file="${src.test.dir}"/>
                 <antcall target="compile-tests"/>
-
-
 		<antcall target="resources" />
 		<antcall target="images" />
 		<property name="glue_base.compile_set" value="true" />
@@ -163,7 +167,9 @@
                 	<pathelement path="${classpath.lib}"/>
                 	<pathelement location="${build.classes.dir}"/>
 	                <fileset dir="${build.lib.dir}" includes="**/*.jar"/>
+			<!-- these are used in other modules -->
                         <pathelement location="${root.dir}/farm-shared/build/test-classes"/>
+                        <pathelement location="${root.dir}/libs/custom-serialization/build/test-classes"/>
                 </path>
 
 		<compile srcdir="${src.test.dir}" destdir="${build.test-classes.dir}" classpathref="test-classpath">
@@ -174,13 +180,13 @@
 
 	</target>
 
-	<target name="unit-test" depends="compile" description="run junit tests">
+	<target name="unit-test" depends="compile" description="run junit tests" if="has-tests">
 		<mkdir dir="${build.test-results.dir}"/>
-		<junit printsummary="yes" includeantruntime="no" showoutput="no" haltonerror="yes">
+		<junit printsummary="yes" includeantruntime="no" showoutput="no" haltonerror="no">
 			<classpath>
 				<pathelement location="${build.test-classes.dir}"/>
 				<pathelement path="${classpath.lib}"/>
-               	         <pathelement location="${build.classes.dir}"/>
+               	         	<pathelement location="${build.classes.dir}"/>
                	         <fileset dir="${build.lib.dir}" includes="**/*.jar"/>
 				<!-- hard code common test classes -->
                	         <pathelement location="${root.dir}/farm-shared/build/test-classes"/>
@@ -362,6 +368,10 @@
 <recurse target="artifacts" />
 </target>
 
+<target name="unit-test-all" depends="init" description="--> unit test this and all dependents projects">
+<recurse target="unit-test" />
+</target>
+
 <!-- ================================= 
         IDE Targets         
         ================================= -->
@@ -371,23 +381,6 @@
 	<fileset dir="${ivy.lib.dir}" />
 </copy>
 </target>
-
-<!--
-<target name="unit-test" depends="compile" description="run junit tests">
-<junit printsummary="yes" includeantruntime="no" showoutput="yes">
-<classpath>
-<pathelement location="${build.classes.dir}"/>
-<fileset dir="${build.lib.dir}" includes="**/*.jar"/>
-</classpath>
-<formatter type="brief"/>
-<batchtest fork="no" todir="/tmp">
-<fileset dir="${src.test.dir}">
-<include name="**/*Test.java"/>
-</fileset>
-</batchtest>
-</junit>
-</target>
--->
 
 
 </project>
