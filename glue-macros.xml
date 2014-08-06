@@ -4,6 +4,7 @@
         <attribute name="srcdir" default="${src.main.dir}" />
         <attribute name="destdir" default="${build.classes.dir}" />
         <attribute name="target" default="${compile.source}" />
+        <attribute name="classpathref" default="classpath.lib" />
         <element name="includes" />
         <element name="extra-compile" optional="true" />
         <sequential>
@@ -11,8 +12,11 @@
             <depend srcdir="@{srcdir}" destdir="@{destdir}" cache="${build.dir}/cache">
                 <includes />
             </depend>
+
+<echo message="cp=@{classpathref}"/>
+
             <javac destdir="@{destdir}" srcdir="@{srcdir}" optimize="${compile.optimize}" source="@{target}" target="@{target}" debug="${compile.debug}" memoryInitialSize="512m" memoryMaximumSize="512m" fork="yes" includeantruntime="false">
-                <classpath refid="classpath.lib" />
+                <classpath refid="@{classpathref}" />
                 <includes />
                 <extra-compile />
             </javac>
