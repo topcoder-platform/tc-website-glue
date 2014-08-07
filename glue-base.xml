@@ -137,11 +137,6 @@
 	<target name="prepare-compile" depends="compile.properties, resolve" />
 
 
-	<pathconvert property="has-tests" setonempty="false" pathsep=" ">
-		<path>
-			<fileset dir="${src.test.dir}" includes="**/*.java" erroronmissingdir="false"/>
-		</path>
-	</pathconvert>
 
 	<target name="compile" depends="prepare-compile" description="--> compiles source main" unless="glue_base.compile_set">
 		<echo level="info">COMPILING ${ant.project.name} --------------------------------------------------</echo>
@@ -164,7 +159,7 @@
 		<property name="glue_base.compile_set" value="true" />
 	</target>
 
-	<target name="compile-tests" if="has-tests">
+	<target name="compile-tests" depends="prepare-compile" if="has-tests">
                 <path id="test-classpath">
                 	<pathelement path="${classpath.lib}"/>
                 	<pathelement location="${build.classes.dir}"/>
@@ -183,7 +178,18 @@
 
 	</target>
 
-	<target name="unit-test" depends="compile-tests" description="run junit tests" if="has-tests">
+	<target name="unit-test">
+		<!-- need a wrapper target due to old version of ant in vm setup -->
+		<pathconvert property="has-tests" setonempty="false" pathsep=" ">
+			<path>
+				<fileset dir="${src.test.dir}" includes="**/*.java" erroronmissingdir="false"/>
+			</path>
+		</pathconvert>
+		<antcall target="unit-test-exec"/>
+
+	</target>
+	
+	<target name="unit-test-exec" depends="compile-tests" description="run junit tests" if="has-tests">
 		<mkdir dir="${build.test-results.dir}"/>
 		<junit printsummary="yes" includeantruntime="no" showoutput="no" haltonerror="no">
 			<classpath>
