@@ -156,7 +156,9 @@
 			</fileset>
 		</copy>
 
+<!--
                 <antcall target="compile-tests"/>
+-->
 		<antcall target="resources" />
 		<antcall target="images" />
 		<property name="glue_base.compile_set" value="true" />
@@ -181,7 +183,7 @@
 
 	</target>
 
-	<target name="unit-test" depends="compile" description="run junit tests" if="has-tests">
+	<target name="unit-test" depends="compile-tests" description="run junit tests" if="has-tests">
 		<mkdir dir="${build.test-results.dir}"/>
 		<junit printsummary="yes" includeantruntime="no" showoutput="no" haltonerror="no">
 			<classpath>
