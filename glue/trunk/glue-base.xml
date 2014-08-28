@@ -115,9 +115,20 @@
         target: compile
         ================================= -->
 	<target name="compile.properties">
+		<condition property="compile.optimize" value="${env.BUILD_COMPILE_OPTIMIZE}" else="on">
+			<isset property="env.BUILD_COMPILE_OPTIMIZE"/>
+		</condition>
+		<condition property="compile.source" value="${env.BUILD_COMPILE_SOURCE}" else="1.5">
+			<isset property="env.BUILD_COMPILE_OPTIMIZE"/>
+		</condition>
+		<condition property="compile.debug" value="${env.BUILD_COMPILE_DEBUG}" else="on">
+			<isset property="env.BUILD_COMPILE_OPTIMIZE"/>
+		</condition>
+<!--
 		<property name="compile.optimize" value="on" />
 		<property name="compile.source" value="1.5" />
 		<property name="compile.debug" value="on" />
+-->
 	</target>
 
 	<target name="images" depends="init" if="images-exist" unless="skip.images">
@@ -139,7 +150,7 @@
 
 
 	<target name="compile" depends="prepare-compile" description="--> compiles source main" unless="glue_base.compile_set">
-		<echo level="info">COMPILING ${ant.project.name} --------------------------------------------------</echo>
+		<echo level="info">COMPILING ${ant.project.name} with source ${compile.source}  ------------------------------------------</echo>
 		<compile>
 			<includes>
 				<include name="**/*.java" />
@@ -392,6 +403,5 @@
 	<fileset dir="${ivy.lib.dir}" />
 </copy>
 </target>
-
 
 </project>
