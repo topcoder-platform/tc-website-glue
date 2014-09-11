@@ -308,11 +308,13 @@
 	<!-- =================================
         target: zip
         ================================= -->
-	<target name="zip-doc" depends="javadoc" unless="nodoc" description="--> generates JavaDoc for the main source folder">
+	<target name="zip-doc" depends="generate-javadocs" unless="nodoc" description="--> generates JavaDoc for the main source folder">
+	    <mkdir dir="${dist.artifacts.dir}" />
 		<property name="zip.doc.file" location="${dist.artifacts.dir}/${ant.project.name}-doc-${app.version}.zip" />
 		<zip destfile="${zip.doc.file}">
 			<zipfileset dir="${dist.doc.dir}" />
 		</zip>
+		<property name="nodoc" value="true" />
 	</target>
 
 	<target name="zip" depends="jar,zip-doc" description="Generates the jar, doc and the deployment properties. The generates a zip with all required files">
@@ -333,18 +335,18 @@
 	<!-- =================================
         target: javadoc
         ================================= -->
-	<target name="javadoc" description="--> generates JavaDoc" unless="nodoc">
+	<target name="generate-javadocs" depends="jar" description="--> generates JavaDoc" unless="nodoc">
 		<mkdir dir="${dist.doc.dir}" />
-		<javadoc access="public" author="true" classpathref="classpath.lib" destdir="${dist.doc.dir}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.topcoder.*" source="1.5" sourcepath="${src.main.dir}" splitindex="true" use="true" version="true">
-
-			<link href="http://logging.apache.org/log4j/docs/api/" />
-			<link href="http://java.sun.com/j2se/1.5/docs/api/" />
+		<javadoc access="public" author="true" classpathref="classpath.lib" destdir="${dist.doc.dir}" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.topcoder.*" source="${compile.source}" sourcepath="${src.main.dir}" splitindex="true" use="true" version="true">
 			<doctitle>
-				<![CDATA[<h1>Project Name</h1>]]></doctitle>
-		<bottom>
-			<![CDATA[<i>Copyright TopCoder Inc. 2008. All Rights Reserved.</i>]]></bottom>
-</javadoc>
-</target>
+				<![CDATA[<h1>Project Name</h1>]]>
+			</doctitle>
+		    <bottom>
+				<![CDATA[<i>Copyright TopCoder Inc. 2008. All Rights Reserved.</i>]]>
+			</bottom>
+		</javadoc>
+		<property name="nodoc" value="true" />
+	</target>
 
 
 <!-- ================================= 
@@ -392,6 +394,10 @@
 
 <target name="unit-test-all" depends="init" description="--> unit test this and all dependents projects">
 <recurse target="unit-test" />
+</target>
+
+<target name="generate-javadocs-all" depends="init" description="--> generate javadoc of this and all dependents projects">
+<recurse target="generate-javadocs" />
 </target>
 
 <!-- ================================= 
