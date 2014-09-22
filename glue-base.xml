@@ -171,6 +171,10 @@
 	</target>
 
 	<target name="compile-tests" depends="prepare-compile" if="has-tests">
+		<condition property="compile.test-source" value="${env.BUILD_COMPILE_TEST_SOURCE}" else="${compile.source}">
+			<isset property="env.BUILD_COMPILE_TEST_SOURCE"/>
+		</condition>
+		
                 <path id="test-classpath">
                 	<pathelement path="${classpath.lib}"/>
                 	<pathelement location="${build.classes.dir}"/>
@@ -181,7 +185,9 @@
                         <pathelement location="${root.dir}/libs/compeng-common/build/test-classes"/>
                 </path>
 
-		<compile srcdir="${src.test.dir}" destdir="${build.test-classes.dir}" classpathref="test-classpath">
+		<echo message="test class compile with version ${compile.test-source}"/>
+		
+		<compile srcdir="${src.test.dir}" destdir="${build.test-classes.dir}" target="${compile.test-source}" classpathref="test-classpath">
 			<includes>
 				<include name="**/*.java" />
 			</includes>
