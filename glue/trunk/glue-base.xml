@@ -119,10 +119,10 @@
 			<isset property="env.BUILD_COMPILE_OPTIMIZE"/>
 		</condition>
 		<condition property="compile.source" value="${env.BUILD_COMPILE_SOURCE}" else="1.5">
-			<isset property="env.BUILD_COMPILE_OPTIMIZE"/>
+			<isset property="env.BUILD_COMPILE_SOURCE"/>
 		</condition>
 		<condition property="compile.debug" value="${env.BUILD_COMPILE_DEBUG}" else="on">
-			<isset property="env.BUILD_COMPILE_OPTIMIZE"/>
+			<isset property="env.BUILD_COMPILE_DEBUG"/>
 		</condition>
 <!--
 		<property name="compile.optimize" value="on" />
