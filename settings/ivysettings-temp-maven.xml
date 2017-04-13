@@ -1,0 +1,5 @@
+<ivysettings>
+    <resolvers>
+            <ibiblio name="temp-maven" m2compatible="true" root="https://github.com/appirio-tech/temp-maven-repo/raw/master"/>
+    </resolvers>
+</ivysettings>
