@@ -2,7 +2,7 @@
     <resolvers>
         <chain name="internal-artifacts-chain" returnFirst="true" dual="true">
             <resolver ref="local-chain" />
-            <resolver ref="internal-artifacts" />
+            <resolver ref="temp-maven" />
         </chain>
     </resolvers>
 </ivysettings>

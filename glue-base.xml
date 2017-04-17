@@ -29,6 +29,10 @@
 	<property name="ide.lib.destdir" value="${root.dir}/artifacts" />
 
 	<property environment="env" />
+	<condition property="env.SHARED_DIR" else="/shared">
+      <isset property="env.SHARED_DIR"/>
+    </condition>
+    <property name="shared.dir" value="${env.SHARED_DIR}"/>
 
 	<dirname file="${ant.file.glue-base}" property="glue.dir" />
 	<property file="${glue.dir}/ivy.properties" />

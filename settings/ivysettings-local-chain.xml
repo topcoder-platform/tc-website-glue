@@ -4,6 +4,8 @@
             <resolver ref="local-workspace" />
             <resolver ref="local-user" />
             <resolver ref="local-shared" />
+            <resolver ref="local-external-artifacts" />
+            <resolver ref="local-temp-maven" />
         </chain>
     </resolvers>
 </ivysettings>

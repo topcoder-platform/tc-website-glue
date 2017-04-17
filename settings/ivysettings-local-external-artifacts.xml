@@ -1,0 +1,11 @@
+<ivysettings>
+    <property name="ivy.local-external-artifacts.root" value="${root.dir}/external-artifacts" override="false" />
+    <property name="ivy.local-user.default.ivy.pattern" value="${ivy.filesystem.ivy.pattern}" override="false" />
+    <property name="ivy.local-user.default.artifact.pattern" value="${ivy.filesystem.artifact.pattern}" override="false" />
+    <resolvers>
+        <filesystem name="local-external-artifacts">
+            <ivy pattern="${ivy.local-external-artifacts.root}/${ivy.local-user.default.ivy.pattern}" />
+            <artifact pattern="${ivy.local-external-artifacts.root}/${ivy.local-user.default.artifact.pattern}" />
+        </filesystem>
+    </resolvers>
+</ivysettings>
