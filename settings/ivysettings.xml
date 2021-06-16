@@ -4,12 +4,13 @@
     <include file="${ivy.settings.dir}/ivysettings-local-workspace.xml" />
     <include file="${ivy.settings.dir}/ivysettings-local-user.xml" />
     <include file="${ivy.settings.dir}/ivysettings-local-shared.xml" />
+    <include file="${ivy.settings.dir}/ivysettings-local-external-artifacts.xml" />
+    <include file="${ivy.settings.dir}/ivysettings-local-temp-maven.xml" />
     <include file="${ivy.settings.dir}/ivysettings-local-chain.xml" />
-
-    <include file="${ivy.settings.dir}/ivysettings-internal-artifacts.xml" />
+    
+    <include file="${ivy.settings.dir}/ivysettings-temp-maven.xml" />
     <include file="${ivy.settings.dir}/ivysettings-internal-artifacts-chain.xml" />
     <include file="${ivy.settings.dir}/ivysettings-external-artifacts.xml" />
-    <include file="${ivy.settings.dir}/ivysettings-tcs-artifacts.xml" />
     <include file="${ivy.settings.dir}/ivysettings-tcs-artifacts-chain.xml" />
     <include file="${ivy.settings.dir}/ivysettings-internal-chain.xml" />
 

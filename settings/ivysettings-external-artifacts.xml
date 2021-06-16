@@ -1,8 +1,8 @@
 <ivysettings>
     <resolvers>
         <url name="external-artifacts">
-            <ivy pattern="https://coder.topcoder.com/internal/external-artifacts/trunk/ivy-[module]-[revision].xml" />
-            <artifact pattern="https://coder.topcoder.com/internal/external-artifacts/trunk/[artifact]-[revision].[ext]" />
+            <ivy pattern="https://github.com/topcoder-platform/tc-website-external-artifacts/raw/svn2git/ivy-[module]-[revision].xml" />
+            <artifact pattern="https://github.com/topcoder-platform/tc-website-external-artifacts/raw/svn2git/[artifact]-[revision].[ext]" />
         </url>
     </resolvers>
 </ivysettings>
